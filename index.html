@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <link href="https://cdn.jsdelivr.net/npm/@mdi/font@6.x/css/materialdesignicons.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.min.css" rel="stylesheet">
+
+  <!-- Fremeworks-->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/v-mask/2.0.1/v-mask.js"></script>
+  <script src="https://cdn jsdelivr.net/npm/vuelidate@0.7.6/lib/index.min.js"></script>
+
+
+  <title>Agênda de contatos</title>
+  <style>
+form {
+    max-width: 600px;
+    margin: 0 auto;
+    font-family: 'Open Sans', sans-serif;
+    font-weight: weight;
+    font-style: normal;
+    padding: 10px;
+}
+fieldset{
+        border: none;
+        font-weight: normal;
+}  
+input[type="text"], input[type="email"], 
+textarea{
+        box-sizing: border-box;
+        outline: none;
+        display: block;
+        color: #333333;
+        width: 100%;
+        padding: 7px;
+        border: none;
+        border-bottom: 1px solid #ddd;
+        margin-bottom: 10px;
+        font-family: inherit;
+        font-size: 18px;
+        height: 45px;
+}
+
+textarea{
+    height: 200px;
+}
+        
+fieldset span{
+    display: block;
+    font-size: 14px;
+    color: #f04242;
+    padding-bottom: 10px;
+}
+input:invalid {
+    animation: shake 300ms;
+}
+@keyframes shake {
+  25% {transform: translateX(4px); }
+  50% {transform: translateX(-4px); }
+  75% {transform: translateX(4px); }
+}
+button [type="submit"]{
+        display: block;
+        padding: 19px 39px 18px 39px;
+        color: #ffffff;
+        background: #1abc9c;
+        font-size: 18px;
+        width: 100%;
+        border: 1px solid #16a085;
+        border-width: 1px 1px 3px;
+        margin-top: 50px;
+        margin-bottom: 10px;
+        cursor: pointer;
+        transition: all .3s;
+        outline: none;
+}       
+
+  </style>
+
+</head>
+<body>
+ 
+  <div id="app">
+    <v-app id="inspire" >
+      <form  method="post" action="" v-on:submit.prevent="checkForm">
+        <v-data-table :headers="headers" :items="desserts" sort-by="calories" class="elevation-2">
+          <template v-slot:top>
+            <v-toolbar flat>
+              <v-toolbar-title>Agênda de Contatos</v-toolbar-title>
+              <v-divider class="mx-4" inset vertical></v-divider>
+              <v-spacer></v-spacer>
+              <v-dialog v-model="dialog" max-width="500px">
+                <template v-slot:activator="{ on, attrs }"> 
+                  <v-btn color="primary" dark class="mb-2" v-bind="attrs" v-on="on"> Adicionar </v-btn>
+                </template>
+                  <v-card>
+                  <v-card-title>
+                    <span class="modal-title">{{ formTitle }}</span>
+                  </v-card-title>
+                    <!--modal--> 
+                      <v-card-text>
+                          <v-container>
+                            <v-row>
+                              <div id="form">
+                                <form method="POST" id="form" action="" v-on:submit.prevent="validateBeforeSubmit" ref="contato">
+                                  <fieldset>
+                                  <input type="hidden" name="_subject" value="Novo contato!" />
+                                  <input type="hidden" name="_next" value="" />
+                                  <input type="hidden" name="_language" value="pt" />
+                                
+                                  <label>Nome:</label>
+                                    <input type="text" id="nome" onchange="toogleButton() "name="nome" v-model="editedItem.name" placeholder="Seu nome" v-validate="'required'" :class="{'has-error': errors.has('nome')}">
+                                    <span v-if="errors.has('nome')">Campo obrigatorio</span>
+                                  <label>Telefone:</label>
+                                    <input type="text" id="telefone" onchange="toogleButton()"  v-model="editedItem.telefone" v-mask="'(##) #####-####'" name="telefone"  placeholder="Seu telefone" v-validate="'required|telefone'" :class="{'has-error': errors.has('telefone')}" >
+                                    <span v-if="errors.has('telefone')">Campo obrigatorio</span>
+
+                                  </fieldset>
+                                </form>
+                              </div>
+                          </v-row>
+                        </v-container>
+                      </v-card-text>
+                    <!-- Botoes Modal -->
+                    <v-card-actions v-card-actions>
+                      <v-spacer></v-spacer>
+                        <v-btn color="red darken-2" text @click="close"> Cancelar </v-btn>
+                        <v-btn color="blue darken-1" text @click="save" > Salvar </v-btn>                  
+                    </v-card-actions>
+              </v-card>
+            </v-dialog>
+        </form>
+          <!-- Modal de Exclusão-->
+          <v-dialog v-model="dialogDelete" max-width="500px">
+            <v-card>
+              <v-card-title class="text-h5">Deseja realmente apaga esse campo ?</v-card-title>
+              <v-card-actions>
+                <v-spacer></v-spacer>
+                <v-btn color="blue darken-1" text @click="closeDelete()">Cancel</v-btn>
+                <v-btn large color="error" color="blue darken-1" text @click="deleteItemConfirm">OK</v-btn>
+                <v-spacer></v-spacer>
+              </v-card-actions>
+            </v-card>
+          </v-dialog>            
+        </v-toolbar>
+      </template>
+      
+        <template v-slot:item.actions="{ item }">
+          <v-icon fab dark large color="primary" small class="mr-2" @click="editItem(item)">mdi-pencil</v-icon>
+          <v-icon large color="error" small @click="deleteItem(item)">mdi-delete</v-icon>
+        </template>
+    </v-data-table>
+  </v-app>
+
+  </div>
+  
+
+  <!---Fremeworks-->
+
+  <script src="https://unpkg.com/vue@2.4.2"></script>
+  <script src="https://unpkg.com/vee-validate@2.0.0-rc.8"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vue@2.x/dist/vue.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.js"></script>
+
+<script>
+
+
+Vue.use(VueMask.VueMaskPlugin);
+  Vue.use(VeeValidate);
+
+      const dictionary = { //validação dos campos nome, telefone
+          pt: {
+              custom: {
+                  nome: {
+                      required:'Por favor, insira seu nome'
+                  },
+                  telefone: {
+                      required: 'Por favor, insira seu email',
+                  }
+              }
+          }
+      };
+
+      VeeValidate.Validator.updateDictionary(dictionary);
+      VeeValidate.Validator.setLocale('pt');
+
+      new Vue({
+        el: '#app', 
+        vuetify: new Vuetify(),
+        data: () => ({
+          data() { //validação capo telefone
+            return {
+                dynamicMask: '(##) #####-####',
+            }
+          },
+          dialog: false,
+          dialogDelete: false,
+          headers: [
+            {
+              text: 'Nome',
+              align: 'start',
+              sortable: false,
+              value: 'name',
+            },
+            { text: 'Telefone', 
+              value: 'telefone' 
+            },
+
+            { text: 'Ação', 
+              value: 'actions', 
+              sortable: false },
+          ],
+          desserts: [],
+          editedIndex: -1,
+          editedItem: {
+            name: '',
+            validations: {
+          },
+          el: 'form',
+          delimiters:['${','}'],
+          methods: {
+          
+        },
+      }
+     }),
+
+      computed: {
+          validateBeforeSubmit: function(){
+            this.$validator.validateAll();
+            if(!this.errors.any()){
+              this.$refs.contato.submit();
+            }
+          },
+        //Conteudo do modal 
+          name: '',
+          formTitle () {
+            return this.editedIndex === -1 ? 'Novo Contato' : 'Editar Contato'
+          }
+        },
+        
+        methods: {
+
+          editItem (item) {
+            this.editedIndex = this.desserts.indexOf(item)
+            this.editedItem = Object.assign({}, item)
+            this.dialog = true
+          },
+
+          deleteItem (item) {
+            this.editedIndex = this.desserts.indexOf(item)
+            this.editedItem = Object.assign({}, item)
+            this.dialogDelete = true
+          },
+
+          deleteItemConfirm () {
+            this.desserts.splice(this.editedIndex, 1)
+            this.closeDelete()
+          },
+
+          close () {
+            this.dialog = false
+            this.$nextTick(() => {
+              this.editedItem = Object.assign({}, this.defaultItem)
+              this.editedIndex = -1
+            })
+          },
+
+          closeDelete () {
+            this.dialogDelete = false
+            this.$nextTick(() => {
+              this.editedItem = Object.assign({}, this.defaultItem)
+              this.editedIndex = -1
+            })
+          },
+
+          save () {
+            if (this.editedIndex > -1) {
+              Object.assign(this.desserts[this.editedIndex], this.editedItem)
+            } else {
+              this.desserts.push(this.editedItem)
+            } 
+            this.close()
+            
+          },
+        },
+      });
+      
+  </script>
+</body>
+</html>
