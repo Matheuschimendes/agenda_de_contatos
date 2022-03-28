@@ -7,7 +7,7 @@
 
     <link href="https://cdn.jsdelivr.net/npm/@mdi/font@6.x/css/materialdesignicons.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.min.css" rel="stylesheet">
-
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
     <!-- Fremeworks-->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/v-mask/2.0.1/v-mask.js"></script>
     <script src="https://cdn jsdelivr.net/npm/vuelidate@0.7.6/lib/index.min.js"></script>
@@ -78,7 +78,7 @@
     <div id="app">
       <v-app id="inspire" >
         <form  method="post" action="" v-on:submit.prevent="checkForm">
-          <v-data-table :headers="headers" :items="desserts" sort-by="calories" class="elevation-2">
+          <v-data-table :headers="headers" :items="desserts" class="elevation-2">
             <template v-slot:top>
               <v-toolbar flat>
                 <v-toolbar-title>Agênda de Contatos</v-toolbar-title>
@@ -97,20 +97,14 @@
                             <v-container>
                               <v-row>
                                 <div id="form" >
-                                  <form method="POST" id="form" action="" v-on:submit.prevent="validateBeforeSubmit" ref="contato" >
+                                  <form method="POST" id="form" action="" v-on:submit.prevent="validateBeforeSubmit" ref="contato" onsubmit="return check_form()" >
                                     <fieldset>
-                                    <input type="hidden" name="_subject" value="Novo contato!" />
-                                    <input type="hidden" name="_next" value="" />
-                                    <input type="hidden" name="_language" value="pt" />
-                                  
                                     <label>Nome:</label>
-                                      <input type="text" id="nome" onchange="toogleButton() "name="nome" v-model="editedItem.name" placeholder="Seu nome" v-validate="'required'" :class="{'has-error': errors.has('nome')}">
+                                      <input type="text"  class="text required"id="nome" onchange="toogleButton() "name="nome" v-model="editedItem.name" placeholder="Seu nome" v-validate="'required'" :class="{'has-error': errors.has('nome')}">
                                       <span v-if="errors.has('nome')">Campo obrigatorio</span>
                                     <label>Telefone:</label>
-                                      <input type="text" id="telefone" onchange="toogleButton()"  v-model="editedItem.telefone" v-mask="'(##) #####-####'" name="telefone"  placeholder="Seu telefone" v-validate="'required|telefone'" :class="{'has-error': errors.has('telefone')}" >
+                                      <input type="text"  class="text required" id="telefone" onchange="toogleButton()"  v-model="editedItem.telefone" v-mask="'(##) #####-####'" name="telefone"  placeholder="Seu telefone" v-validate="'required|telefone'" :class="{'has-error': errors.has('required')}" >
                                       <span v-if="errors.has('telefone')">Campo obrigatorio</span>
-
-                                      
                                     </fieldset>
                                   </form>
                                 </div>
@@ -121,7 +115,7 @@
                       <v-card-actions v-card-actions>
                         <v-spacer></v-spacer>
                           <v-btn color="red darken-2" text @click="close"> Cancelar </v-btn>
-                          <v-btn :disabled="isAddButtonDisabled"  id="btn-salve" color="blue darken-1" text @click="save"> Salvar </v-btn>                  
+                          <v-btn :disabled="isAddButtonDisabled" type="button" value="Salvar" onclick="verifica()"  color="blue darken-1" text @click="save"> Salvar </v-btn>         
                       </v-card-actions>
                 </v-card>
               </v-dialog>
@@ -154,13 +148,13 @@
     <!---Fremeworks-->
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    
     <script src="https://unpkg.com/vue@2.4.2"></script>
     <script src="https://unpkg.com/vee-validate@2.0.0-rc.8"></script>
     <script src="https://cdn.jsdelivr.net/npm/vue@2.x/dist/vue.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.js"></script>
 
   <script>
-
 
   Vue.use(VueMask.VueMaskPlugin);
     Vue.use(VeeValidate);
@@ -172,7 +166,7 @@
                         required:'Por favor, insira seu nome'
                     },
                     telefone: {
-                        required: 'Por favor, insira seu email',
+                        required: 'Por favor, insira seu telefone',
                     }
                 }
             }
@@ -180,7 +174,7 @@
 
         VeeValidate.Validator.updateDictionary(dictionary);
         VeeValidate.Validator.setLocale('pt');
-
+//tabela 
         new Vue({
           el: '#app', 
           vuetify: new Vuetify(),
@@ -212,6 +206,8 @@
             editedIndex: -1,
             editedItem: {
               name: '',
+              telefone:'',
+
               validations: {
             },
             el: 'form',
@@ -222,10 +218,9 @@
         }
       }),
 
-        computed: {
-            isAddButtonDisabled() {
+        computed: { 
+            isAddButtonDisabled() {// validação de bloqueio do salve
                 const validName = false
-              
                 return !(this.editedItem.name && this.editedItem.telefone);
                 
             },
@@ -281,55 +276,34 @@
             },
 
             save () {
-              if 
-              
-              (this.editedIndex > -1) {
+              if(this.editedIndex > -1) {
                 Object.assign(this.desserts[this.editedIndex], this.editedItem)
-              
-              } else {
                 
-                /*$(document).on('click', 'button', 
-                function(){
-                    var nome = $('input').val(); // Pega valor do campo
-                    // Regex para duas strings, separadas com espaço e com no mínimo 3 caracteres. Aceita acentuação e rejeita números.
-                    
-                    // Faz a validacao do regex no campo indicado
-                    if(nome.match(/^[a-zA-Z\u00C0-\u017F´]+\s+[a-zA-Z\u00C0-\u017F´]{0,}$/) && nome.trim().split(' ').length == 2){
-                      alert("nome válido");
-                  }else{
-                      alert("nome INVÁLIDO");
+              } else {  
+                  //if( validName != false){
+                   this.desserts.push(this.editedItem)
+                      
                   }
-
-                });*/
-                const validName = false
-                let text = this.editedItem.name  
-                const names = text.prototype.split(" ")
-                console.log(names[1].lenght)
-                text.split(" ").forEach(nome => 
-                { if (nome.match(/^[a-zA-Z\u00C0-\u017F´]+\s+[a-zA-Z\u00C0-\u017F´]{0,}$/) && nome.trim().split(' ').length == 2){
-                  alert('')
-                    Validname= false
-                    }else{
-                      alert('invalido')
-                    }
-                  }
-                
-                    
-                    
-                  )};
-            
-                              
-                  //if (validName != false){
-                  this.desserts.push(this.editedItem)
-                  
-              
-              
-              this.close()
-          
+                    this.close()
             },
           },
         });
-        
+
+          //Validando nome e sobrenome de no minimo 3 letras 
+      /*function verifica(){
+                       
+                      const input = $("#nome").val();
+                      const nome = input.split(" ")[0]
+                      const sobrenome = input.split(" ")[1]
+
+                      if(nome.length >= 3 && sobrenome.length >= 3) {
+                          alert("nome valido")
+                      } else {
+                          alert("nome invalido")
+                      }
+                      console.log(nome)
+                      console.log(sobrenome)
+                     } */
     </script>
   </body>
   </html>
