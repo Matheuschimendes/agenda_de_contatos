@@ -12,13 +12,6 @@
     integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
 
 
-  <!-- Fremeworks-->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/vue-the-mask/0.11.1/vue-the-mask.min.js"></script>
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/vue@2.6.0"></script>
-  <script src="https://unpkg.com/vee-validate"></script>
-
-
   <title>Formulario</title>
 </head>
 <style>
@@ -109,6 +102,7 @@
                   <v-container>
                     <v-row>
                       <fieldset>
+                        <!-- Formulario do modal -->
                         <form id="app" @submit="checkForm"  novalidate="true">
 
                           <p v-if="errors.length">
@@ -176,7 +170,8 @@
 
   <script src="https://cdn.jsdelivr.net/npm/vue@2.x/dist/vue.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.js"></script>
-  <script src="https://unpkg.com/vee-validate@2.0.0-rc.8"></script>
+
+
   <script>
 
  
@@ -221,7 +216,7 @@
         isAddButtonDisabled() {
           // validação de bloqueio do salve
           const validName = false
-          return !(this.editedItem.name && this.editedItem.phone);
+          return !(this.editedItem.name || this.editedItem.phone);
 
         },
 
