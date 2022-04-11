@@ -10,6 +10,7 @@
   <link href="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.min.css" rel="stylesheet">
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
     integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vue-the-mask/0.11.1/vue-the-mask.js"></script>
 
 
   <title>Formulario</title>
@@ -103,7 +104,8 @@
                     <v-row>
                       <fieldset>
                         <!-- Formulario do modal -->
-                        <form id="app" @submit="checkForm"  novalidate="true">
+                        <form @submit.prevent="save" novalidate="true">
+                          <!-- @submit.prevent executa uma ação -->
 
                           <p v-if="errors.length">
                             <b>Corrija os seguintes erros:</b>
@@ -115,19 +117,15 @@
                           <p>
                             <label for="name">Name</label>
                             <input id="name" v-model="editedItem.name" type="text" name="name" required>
-                            
-                          
+
+
                           </p>
 
                           <p>
                             <label for="phone">Telefone</label>
-                            <input id="phone" v-model="editedItem.phone"  v-mask="'(##) #####-####'" type="text" name="phone" required> 
-                          </p>
-
-                          <p>
-
-                            <v-btn type="submit" color="blue darken-1" text @click="addCat" value="Submit">Salvar</v-btn>
-
+                            <input id="phone" v-model="editedItem.phone" v-mask="'(##) #####-####'" type="text" name="phone" required>
+                           
+                            <!--<span>{{ '9999999999' | VMask('(##) ###-####') }}</span>-->
                           </p>
 
                         </form>
@@ -140,7 +138,8 @@
                 <v-card-actions>
                   <v-spacer></v-spacer>
                   <v-btn color="red darken-2" text @click="close"> Cancelar </v-btn>
-                 <!---- <v-btn :disabled="isAddButtonDisabled" color="blue darken-1" text @click="save" type="submit"> Salvar </v-btn>-->
+                  <v-btn :disabled="isAddButtonDisabled" color="blue darken-1" text @click="save" type="submit"> Salvar
+                  </v-btn>
                 </v-card-actions>
               </v-card>
             </v-dialog>
@@ -170,11 +169,13 @@
 
   <script src="https://cdn.jsdelivr.net/npm/vue@2.x/dist/vue.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/v-mask/dist/v-mask.min.js"></script>
+ 
 
 
   <script>
-
  
+
     const app = new Vue({
       el: '#app',
       vuetify: new Vuetify(),
@@ -205,18 +206,18 @@
         desserts: [],
         editedIndex: -1,
         editedItem: {
-          name: '',
-          phone: ''
-
+          name: 'matheus sousa',
+          phone: '(86) 99887-8765'
         }
       }),
+    
 
 
       computed: {
         isAddButtonDisabled() {
           // validação de bloqueio do salve
           const validName = false
-          return !(this.editedItem.name || this.editedItem.phone);
+          return !(this.editedItem.name && this.editedItem.phone);
 
         },
 
@@ -225,10 +226,13 @@
         }
       },
 
+
       methods: {
-        
-      
-        checkForm: function (event) {
+
+        chekEdit: function (){
+          
+        },
+        checkForm: function () {
           this.errors = [];
 
           if (!this.editedItem.name) {
@@ -243,12 +247,14 @@
             this.errors.push('Telefone deverá conter (##) #####-####');
           }
 
-          if (!this.errors.length) {
-            return true;
+          if (this.errors.length > 0) {
+            return false;
           }
 
-          event.preventDefault();
+          return true;
+
         },
+        
 
         // validaçao com o regex
         validName: function (name) {
@@ -263,9 +269,12 @@
 
 
         editItem(item) {
+
           this.editedIndex = this.desserts.indexOf(item)
           this.editedItem = Object.assign({}, item)
           this.dialog = true
+          
+
         },
 
         deleteItem(item) {
@@ -294,28 +303,25 @@
             this.editedIndex = -1
           })
         },
-       
-       save() {
 
-          if (this.editedItem.name > -1) {
-           
-            Object.assign(this.desserts[this.editedIndex], this.editedItem)
+        save() {
 
+          const isFormValid = this.checkForm();
+
+          if (isFormValid) {
+            this.desserts.push(this.editedItem);
+            return this.close();
           } else {
-            if ( editItem.name != false) {
-              
-              this.desserts.push(this.editedItem)
-
-            }
-            this.close()
+            return console.log('Form invalido');
           }
-        }
-      }
-      
+        }  
+      },
 
     })
-     
-      
+     //Mascara do telefone
+  Vue.use(VueMask.VueMaskPlugin);
+
+
 
   </script>
 </body>
