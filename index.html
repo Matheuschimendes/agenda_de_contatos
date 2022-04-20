@@ -14,6 +14,7 @@
   <title>Agênda de Contatos</title>
 </head>
 <style>
+  
   form {
     max-width: 600px;
     margin: 0 auto;
@@ -102,20 +103,19 @@
                     <v-row>
                       <fieldset>
                         <!-- Formulario do modal -->
-                        <form @submit.prevent="save" novalidate="true">
+                        <form @submit.prevent="save"  id="table" novalidate="true">
                           <!-- @submit.prevent executa uma ação -->
-
+                        
                           <p v-if="errors.length">
                             <b>Corrija os seguintes erros:</b>
                           <ul>
                             <li v-for="error in errors">{{ error }}</li>
                           </ul>
                           </p>
-
+                         
                           <p>
-                            <label for="name">Name</label>
+                            <label for="name">Nome</label>
                             <input id="name" v-model="editedItem.name" type="text" name="name" required>
-
 
                           </p>
 
@@ -126,7 +126,7 @@
 
                             <!--<span>{{ '9999999999' | VMask('(##) ###-####') }}</span>-->
                           </p>
-
+                     
                         </form>
 
                       </fieldset>
@@ -169,12 +169,15 @@
   <script src="https://cdn.jsdelivr.net/npm/vue@2.x/dist/vue.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/v-mask/dist/v-mask.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
 
 
 
   <script>
 
-
+    
+ //Array para armazenar todos os valores da coluna
+ 
     const app = new Vue({
       el: '#app',
       vuetify: new Vuetify(),
@@ -199,16 +202,16 @@
             value: 'actions',
             sortable: false
           },
+          
         ],
         desserts: [],
         editedIndex: -1,
-        editedItem: {}
+        editedItem: {name: 'matheus chimendes', phone: '(11) 90999-9987'}
       }),
 
 
 
       computed: {
-
         isAddButtonDisabled() {
           // validação de bloqueio do salve
           const validName = false
@@ -223,20 +226,18 @@
 
 
       methods: {
-
-
+       
         checkForm: function () { // validador de campos nome e telefone
           this.errors = [];
 
           if (!this.editedItem.name) {
             this.errors.push("Nome e Sobrenome Obrigatório !");
           } else if (!this.validName(this.editedItem.name)) {
-            this.errors.push('Nome e Sobrenome deverá ter no minimo 3 letras cada');
-            this.erros.push('nao pode conter numero')
+            this.errors.push('Nome e Sobrenome deverá ter no minímo 3 letras cada');
           }
-
+        
           if (!this.editedItem.phone) {
-            this.errors.push('Telefone obrigatorio!');
+            this.errors.push('Telefone obrigatório!');
           } else if (!this.validPhone(this.editedItem.phone)) {
             this.errors.push('Telefone deverá conter (##) #####-####');
           }
@@ -293,17 +294,38 @@
             this.editedIndex = -1
           })
         },
-
+        
+        
         save() {
-
+        
           const isFormValid = this.checkForm();
+         
 
+          
+           
           if (isFormValid) {
+          
+          const filtro = this.desserts
+          const objeto = [this.desserts]
+          
+
+          const numero = objeto.filter( (DDD) => {
+         
+              if(objeto.indexOf(filtro) !== -1){
+                $("tbody td").css("background","#87CEFA");
+                return DDD;
+              }else{
+                
+              }
+          });
+              console.log(numero)
+
 
             if (this.editedIndex > -1) {
-              
               Object.assign(this.desserts[this.editedIndex], this.editedItem)
+              
               return this.close()
+              
 
             } else {
               this.desserts.push(this.editedItem)
@@ -312,8 +334,7 @@
             this.close()
           }
 
-
-
+         
           /*const isFormValid = this.checkForm();
 
           if (isFormValid) {
@@ -326,10 +347,12 @@
         }
       },
     })
+
+  
+ 
     //Mascara do telefone
     Vue.use(VueMask.VueMaskPlugin);
-
-
+   
 
   </script>
 </body>
