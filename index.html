@@ -77,6 +77,9 @@
     border-color: #ff0000;
 
   }
+  .colorido {
+  background: red;
+}
 </style>
 
 <body>
@@ -121,8 +124,7 @@
 
                           <p>
                             <label for="phone">Telefone</label>
-                            <input id="phone" v-model="editedItem.phone" v-mask="'(##) #####-####'" type="text"
-                              name="phone" required>
+                            <input id="phone"  v-model="editedItem.phone" v-mask="'(##) #####-####'" type="text" name="phone" required>
 
                             <!--<span>{{ '9999999999' | VMask('(##) ###-####') }}</span>-->
                           </p>
@@ -169,14 +171,8 @@
   <script src="https://cdn.jsdelivr.net/npm/vue@2.x/dist/vue.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/v-mask/dist/v-mask.min.js"></script>
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
-
-
 
   <script>
-
-    
- //Array para armazenar todos os valores da coluna
  
     const app = new Vue({
       el: '#app',
@@ -216,7 +212,7 @@
           // validação de bloqueio do salve
           const validName = false
           return !(this.editedItem.name && this.editedItem.phone);
-
+          
         },
 
         formTitle() {
@@ -226,7 +222,7 @@
 
 
       methods: {
-       
+        
         checkForm: function () { // validador de campos nome e telefone
           this.errors = [];
 
@@ -297,39 +293,38 @@
         
         
         save() {
-        
+      
           const isFormValid = this.checkForm();
-         
 
-          
-           
+  
           if (isFormValid) {
-          
-          const filtro = this.desserts
-          const objeto = [this.desserts]
-          
 
-          const numero = objeto.filter( (DDD) => {
-         
-              if(objeto.indexOf(filtro) !== -1){
-                $("tbody td").css("background","#87CEFA");
-                return DDD;
-              }else{
-                
-              }
-          });
-              console.log(numero)
+                  let filtro = this.editedItem
+                  let DDD = filtro.phone.includes("(11)")
+                  
+                  if(DDD){
+                    document.getElementsByTagName("tbody")[0].style.backgroundColor = '#20d8d8'
+                  }else{
+                    
+                  }
+                  
 
+                  console.log(filtro.phone)
+             
 
             if (this.editedIndex > -1) {
-              Object.assign(this.desserts[this.editedIndex], this.editedItem)
               
+          
+              Object.assign(this.desserts[this.editedIndex], this.editedItem)
+             
+      
               return this.close()
               
 
             } else {
               this.desserts.push(this.editedItem)
 
+              
             }
             this.close()
           }
@@ -348,7 +343,6 @@
       },
     })
 
-  
  
     //Mascara do telefone
     Vue.use(VueMask.VueMaskPlugin);
