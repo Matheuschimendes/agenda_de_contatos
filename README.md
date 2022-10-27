@@ -4,11 +4,14 @@
 Sistema de Agenda de contato
 </p>
 
-
+  
 <p align="center">
   <img alt="License" src="https://img.shields.io/static/v1?label=license&message=MIT&color=49AA26&labelColor=000000">
 </p>
 
+<p align="">
+  <img alt="License" src="https://img.shields.io/static/v1?label=license&message=MIT&color=49AA26&labelColor=000000">
+</p>
 <br>
 
 <p align="center">
@@ -27,7 +30,8 @@ Esse projeto foi desenvolvido com as seguintes tecnologias:
 
 ## 💻 Projeto
 
-A Agenda é um sistema(CRUD) que adiciona número com DDD, alteram e deletam. Com as mascaras de validação, os campos so serão inserido quando os campos forem preechidos corretamento.
+A Agenda é um sistema(CRUD) que adiciona número com DDD, alteram e deletam. Com as mascaras de validação, os campos so serão inserido quando os dados forem preechidos corretamento.
+<p>Link para o projeto:</p>https://agenda-de-contatos-rouge.vercel.app/
 
 
 ## :memo: Licença
