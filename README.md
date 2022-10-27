@@ -18,7 +18,7 @@ Sistema de Agenda de contato em HTML BOOTSTREEP
 <br>
 
 <p align="center">
-  <img alt="rocketpay" src=".github/agenda.png" width="100%">
+  <img width="1440" alt="agenda" src="https://user-images.githubusercontent.com/93441084/198373830-b0aa3039-a989-4bf7-a495-9dafc3e6662e.png">
 </p>
 
 ## 🚀 Tecnologias
