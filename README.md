@@ -12,7 +12,7 @@ Sistema de Agenda de contato
 <br>
 
 <p align="center">
-  <img width="1440" alt="agenda" src="https://user-images.githubusercontent.com/93441084/198373830-b0aa3039-a989-4bf7-a495-9dafc3e6662e.png">
+  https://user-images.githubusercontent.com/93441084/198376247-335a5e24-22c5-46ce-bb99-968f3605652a.mov
 </p>
 
 ## 🚀 Tecnologias
