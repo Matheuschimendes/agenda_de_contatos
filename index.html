@@ -80,12 +80,16 @@
   .colorido {
   background: red;
 }
+ .ddd-11 {
+  background-color: blue !important;
+  color: white;
+}
 </style>
 
 <body>
   <div id="app">
     <v-app id="inspire">
-      <v-data-table :headers="headers" :items="desserts" class="elevation-2">
+      <v-data-table :headers="headers" :items="desserts" class="elevation-2" :item-class="applyClass">
         <template v-slot:top>
           <v-toolbar flat>
             <v-toolbar-title>Agênda de Contatos</v-toolbar-title>
@@ -222,6 +226,9 @@
 
 
       methods: {
+        applyClass(item) {
+        return item.phone.startsWith('(11)') ? 'ddd-11' : '';
+      },
         
         checkForm: function () { // validador de campos nome e telefone
           this.errors = [];
@@ -296,49 +303,32 @@
       
           const isFormValid = this.checkForm();
 
-  
           if (isFormValid) {
-
-                  let filtro = this.editedItem
-                  let DDD = filtro.phone.includes("(11)")
-                  
-                  if(DDD){
-                    document.getElementsByTagName("tbody")[0].style.backgroundColor = '#20d8d8'
-                  }else{
-                    
-                  }
-                  
-
-                  console.log(filtro.phone)
-             
+            let dddInput = document.getElementById("phone")
+            let ddd = dddInput.value
+            let classeCSS = (ddd === "11") ? "ddd-11" : ""
 
             if (this.editedIndex > -1) {
-              
-          
+            
               Object.assign(this.desserts[this.editedIndex], this.editedItem)
-             
-      
               return this.close()
-              
-
+            
             } else {
               this.desserts.push(this.editedItem)
-
-              
             }
             this.close()
           }
 
          
-          /*const isFormValid = this.checkForm();
+          // const isFormValid = this.checkForm();
 
-          if (isFormValid) {
-            this.desserts.push(this.editedItem);
-            return this.close();
-          } else {
+          // if (isFormValid) {
+          //   this.desserts.push(this.editedItem);
+          //   return this.close();
+          // } else {
           
-            return console.log('Form invalido');
-          }*/
+          //   return console.log('Form invalido');
+          // }
         }
       },
     })
